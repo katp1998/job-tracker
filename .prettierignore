@@ -1,0 +1,5 @@
+dist
+coverage
+playwright-report
+extension/dist
+*.md
