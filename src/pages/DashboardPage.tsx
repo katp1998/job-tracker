@@ -18,10 +18,7 @@ export function DashboardPage() {
           <h1 className="text-lg font-semibold text-gray-900">Job Tracker</h1>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">{user?.email}</span>
-            <button
-              onClick={handleSignOut}
-              className="text-sm text-gray-500 hover:text-gray-900"
-            >
+            <button onClick={handleSignOut} className="text-sm text-gray-500 hover:text-gray-900">
               Sign out
             </button>
           </div>
