@@ -154,58 +154,91 @@ export function JobTable({ jobs, sortKey, sortDir, onSort, onStatusChange, onEdi
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
-      <table className="w-full text-sm">
-        <thead className="border-b border-gray-200 bg-gray-50">
-          <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Company</th>
-            <SortHeader label="Position" col="title" />
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Status</th>
-            <SortHeader label="Location" col="location" />
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Salary</th>
-            <SortHeader label="Applied" col="applied_at" />
-            <SortHeader label="Updated" col="updated_at" />
-            <th className="px-4 py-3" />
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {jobs.map(job => (
-            <tr key={job.id} className="group hover:bg-gray-50">
-              <td className="px-4 py-3">
-                <p className="font-medium text-gray-900">{job.company}</p>
-                {job.url && (
-                  <a
-                    href={job.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-0.5 text-xs text-blue-500 hover:underline"
-                  >
-                    View posting <FiArrowUpRight size={11} />
-                  </a>
-                )}
-              </td>
-              <td className="px-4 py-3 text-gray-700">{job.title}</td>
-              <td className="px-4 py-3">
-                <StatusDropdown jobId={job.id} status={job.status} onChange={onStatusChange} />
-              </td>
-              <td className="px-4 py-3 text-gray-500">{job.location ?? '—'}</td>
-              <td className="px-4 py-3 text-gray-500">{formatSalary(job.salary_min, job.salary_max, job.salary_currency)}</td>
-              <td className="px-4 py-3 text-gray-500">{formatDate(job.applied_at)}</td>
-              <td className="px-4 py-3 text-gray-500">{formatDate(job.updated_at)}</td>
-              <td className="px-4 py-3">
-                <div className="flex items-center justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-                  <button onClick={() => onEdit(job)} className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-800">
-                    <FiEdit2 size={14} />
-                  </button>
-                  <button onClick={() => onDelete(job.id)} className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500">
-                    <FiTrash2 size={14} />
-                  </button>
-                </div>
-              </td>
+    <>
+      {/* Mobile card list */}
+      <div className="md:hidden divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white shadow-sm">
+        {jobs.map(job => (
+          <div key={job.id} className="p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-semibold text-gray-900">{job.company}</p>
+                <p className="text-sm text-gray-500">{job.title}</p>
+              </div>
+              <StatusDropdown jobId={job.id} status={job.status} onChange={onStatusChange} />
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400">
+              {job.location && <span>{job.location}</span>}
+              {(job.salary_min || job.salary_max) && (
+                <span>{formatSalary(job.salary_min, job.salary_max, job.salary_currency)}</span>
+              )}
+              {job.applied_at && <span>Applied {formatDate(job.applied_at)}</span>}
+              {job.url && (
+                <a href={job.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-blue-500 hover:underline">
+                  View posting <FiArrowUpRight size={11} />
+                </a>
+              )}
+            </div>
+            <div className="mt-3 flex justify-end gap-2">
+              <button onClick={() => onEdit(job)} className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-800">
+                <FiEdit2 size={15} />
+              </button>
+              <button onClick={() => onDelete(job.id)} className="rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500">
+                <FiTrash2 size={15} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+        <table className="w-full text-sm">
+          <thead className="border-b border-gray-200 bg-gray-50">
+            <tr>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Company</th>
+              <SortHeader label="Position" col="title" />
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Status</th>
+              <SortHeader label="Location" col="location" />
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Salary</th>
+              <SortHeader label="Applied" col="applied_at" />
+              <SortHeader label="Updated" col="updated_at" />
+              <th className="px-4 py-3" />
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {jobs.map(job => (
+              <tr key={job.id} className="group hover:bg-gray-50">
+                <td className="px-4 py-3">
+                  <p className="font-medium text-gray-900">{job.company}</p>
+                  {job.url && (
+                    <a href={job.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-xs text-blue-500 hover:underline">
+                      View posting <FiArrowUpRight size={11} />
+                    </a>
+                  )}
+                </td>
+                <td className="px-4 py-3 text-gray-700">{job.title}</td>
+                <td className="px-4 py-3">
+                  <StatusDropdown jobId={job.id} status={job.status} onChange={onStatusChange} />
+                </td>
+                <td className="px-4 py-3 text-gray-500">{job.location ?? '—'}</td>
+                <td className="px-4 py-3 text-gray-500">{formatSalary(job.salary_min, job.salary_max, job.salary_currency)}</td>
+                <td className="px-4 py-3 text-gray-500">{formatDate(job.applied_at)}</td>
+                <td className="px-4 py-3 text-gray-500">{formatDate(job.updated_at)}</td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+                    <button onClick={() => onEdit(job)} className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-800">
+                      <FiEdit2 size={14} />
+                    </button>
+                    <button onClick={() => onDelete(job.id)} className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500">
+                      <FiTrash2 size={14} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   )
 }

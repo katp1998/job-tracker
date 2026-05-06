@@ -54,7 +54,7 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
       onClick={e => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div className="w-full max-w-md overflow-y-auto rounded-2xl bg-white p-6 shadow-xl" style={{ maxHeight: '90dvh' }}>
         <h2 className="mb-5 text-lg font-semibold text-gray-900">
           {initial ? 'Edit job' : 'Add job'}
         </h2>

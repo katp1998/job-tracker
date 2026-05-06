@@ -21,12 +21,12 @@ const TABS: { label: string; value: Filter }[] = [
 ]
 
 function motivationalMessage(applied: number, offers: number) {
-  if (offers > 0) return "You've got offers — great work!"
-  if (applied === 0) return 'Start applying, you\'ve got this!'
+  if (offers > 0) return "You've got offers: great work!"
+  if (applied === 0) return "Start applying, you've got this!"
   if (applied < 5) return 'Great start, keep the momentum going!'
-  if (applied < 15) return 'You\'re putting in the work — it\'ll pay off!'
+  if (applied < 15) return "You're putting in the work: it'll pay off!"
   if (applied < 30) return 'Impressive dedication, stay consistent!'
-  return 'Incredible hustle — your next role is out there!'
+  return 'Incredible hustle: your next role is out there!'
 }
 
 export function DashboardPage() {
@@ -83,31 +83,35 @@ export function DashboardPage() {
   })
 
   const activeCount = jobs.filter(j => ['applied', 'interview', 'offer'].includes(j.status)).length
+  const appliedCount = jobs.filter(j => j.status !== 'saved').length
+  const offerCount = jobs.filter(j => j.status === 'offer').length
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white px-6 py-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <h1 className="text-lg font-semibold text-gray-900">Job Tracker</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">{user?.email}</span>
-            <button onClick={handleSignOut} className="text-sm text-gray-400 hover:text-gray-900">
+      <header className="border-b border-gray-200 bg-white px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
+          <h1 className="shrink-0 text-lg font-semibold text-gray-900">Job Tracker</h1>
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="hidden truncate text-sm text-gray-500 sm:block">{user?.email}</span>
+            <button onClick={handleSignOut} className="shrink-0 text-sm text-gray-400 hover:text-gray-900">
               Sign out
             </button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-8">
-        <div className="mb-6 flex gap-6 text-sm">
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+        {/* Stats */}
+        <div className="mb-5 flex flex-wrap gap-4 text-sm">
           <Stat label="total" value={jobs.length} />
           <Stat label="active" value={activeCount} />
           <Stat label="interviewing" value={jobs.filter(j => j.status === 'interview').length} />
-          <Stat label="offers" value={jobs.filter(j => j.status === 'offer').length} />
+          <Stat label="offers" value={offerCount} />
         </div>
 
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <div className="relative w-64">
+        {/* Search + motivational */}
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative w-full sm:w-64">
             <FiSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               value={search}
@@ -121,14 +125,13 @@ export function DashboardPage() {
               </button>
             )}
           </div>
-          <div className="text-right">
-            <p className="text-sm font-medium text-gray-900">
-              {jobs.filter(j => j.status !== 'saved').length} applications sent
-            </p>
-            <p className="text-xs text-gray-400">{motivationalMessage(jobs.filter(j => j.status !== 'saved').length, jobs.filter(j => j.status === 'offer').length)}</p>
+          <div className="sm:text-right">
+            <p className="text-sm font-medium text-gray-900">{appliedCount} applications sent</p>
+            <p className="text-xs text-gray-400">{motivationalMessage(appliedCount, offerCount)}</p>
           </div>
         </div>
 
+        {/* Filter tabs + Add */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-1">
             {TABS.map(tab => {
@@ -155,7 +158,7 @@ export function DashboardPage() {
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+            className="w-full rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 sm:w-auto"
           >
             + Add job
           </button>
