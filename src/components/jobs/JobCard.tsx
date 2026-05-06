@@ -42,15 +42,10 @@ export function JobCard({ job, onEdit, onDelete }: Props) {
         <span className="ml-auto">{timeAgo(job.created_at)}</span>
       </div>
 
-      {job.notes && (
-        <p className="mt-2 line-clamp-2 text-xs text-gray-400">{job.notes}</p>
-      )}
+      {job.notes && <p className="mt-2 line-clamp-2 text-xs text-gray-400">{job.notes}</p>}
 
       <div className="mt-4 flex justify-end gap-4">
-        <button
-          onClick={() => onEdit(job)}
-          className="text-xs text-gray-400 hover:text-gray-800"
-        >
+        <button onClick={() => onEdit(job)} className="text-xs text-gray-400 hover:text-gray-800">
           Edit
         </button>
         <button

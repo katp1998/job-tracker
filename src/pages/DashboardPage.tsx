@@ -47,14 +47,24 @@ export function DashboardPage() {
   }
 
   function handleSort(key: SortKey) {
-    if (sortKey === key) setSortDir(d => (d === 'asc' ? 'desc' : 'asc'))
-    else { setSortKey(key); setSortDir('desc') }
+    if (sortKey === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    else {
+      setSortKey(key)
+      setSortDir('desc')
+    }
   }
 
   async function handleStatusChange(id: string, status: JobStatus) {
-    const job = jobs.find(j => j.id === id)
+    const job = jobs.find((j) => j.id === id)
     if (!job) return
-    await updateJob(id, { company: job.company, title: job.title, status, url: job.url, location: job.location, notes: job.notes })
+    await updateJob(id, {
+      company: job.company,
+      title: job.title,
+      status,
+      url: job.url,
+      location: job.location,
+      notes: job.notes,
+    })
   }
 
   function openEdit(job: Job) {
@@ -68,9 +78,9 @@ export function DashboardPage() {
   }
 
   const searched = search.trim()
-    ? jobs.filter(j => j.company.toLowerCase().includes(search.toLowerCase()))
+    ? jobs.filter((j) => j.company.toLowerCase().includes(search.toLowerCase()))
     : jobs
-  const filtered = filter === 'all' ? searched : searched.filter(j => j.status === filter)
+  const filtered = filter === 'all' ? searched : searched.filter((j) => j.status === filter)
 
   const sorted = [...filtered].sort((a, b) => {
     const av = (a[sortKey] ?? '').toLowerCase()
@@ -82,9 +92,11 @@ export function DashboardPage() {
     return 0
   })
 
-  const activeCount = jobs.filter(j => ['applied', 'interview', 'offer'].includes(j.status)).length
-  const appliedCount = jobs.filter(j => j.status !== 'saved').length
-  const offerCount = jobs.filter(j => j.status === 'offer').length
+  const activeCount = jobs.filter((j) =>
+    ['applied', 'interview', 'offer'].includes(j.status),
+  ).length
+  const appliedCount = jobs.filter((j) => j.status !== 'saved').length
+  const offerCount = jobs.filter((j) => j.status === 'offer').length
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -93,7 +105,10 @@ export function DashboardPage() {
           <h1 className="shrink-0 text-lg font-semibold text-gray-900">Job Tracker</h1>
           <div className="flex min-w-0 items-center gap-3">
             <span className="hidden truncate text-sm text-gray-500 sm:block">{user?.email}</span>
-            <button onClick={handleSignOut} className="shrink-0 text-sm text-gray-400 hover:text-gray-900">
+            <button
+              onClick={handleSignOut}
+              className="shrink-0 text-sm text-gray-400 hover:text-gray-900"
+            >
               Sign out
             </button>
           </div>
@@ -105,22 +120,28 @@ export function DashboardPage() {
         <div className="mb-5 flex flex-wrap gap-4 text-sm">
           <Stat label="total" value={jobs.length} />
           <Stat label="active" value={activeCount} />
-          <Stat label="interviewing" value={jobs.filter(j => j.status === 'interview').length} />
+          <Stat label="interviewing" value={jobs.filter((j) => j.status === 'interview').length} />
           <Stat label="offers" value={offerCount} />
         </div>
 
         {/* Search + motivational */}
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full sm:w-64">
-            <FiSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <FiSearch
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
             <input
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by company..."
               className="w-full rounded-lg border border-gray-300 py-2 pl-8 pr-8 text-sm outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
             />
             {search && (
-              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+              >
                 <FiX size={14} />
               </button>
             )}
@@ -134,8 +155,9 @@ export function DashboardPage() {
         {/* Filter tabs + Add */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-1">
-            {TABS.map(tab => {
-              const count = tab.value === 'all' ? null : jobs.filter(j => j.status === tab.value).length
+            {TABS.map((tab) => {
+              const count =
+                tab.value === 'all' ? null : jobs.filter((j) => j.status === tab.value).length
               return (
                 <button
                   key={tab.value}
@@ -148,7 +170,9 @@ export function DashboardPage() {
                 >
                   {tab.label}
                   {count !== null && (
-                    <span className={`ml-1.5 text-xs ${filter === tab.value ? 'opacity-70' : 'text-gray-400'}`}>
+                    <span
+                      className={`ml-1.5 text-xs ${filter === tab.value ? 'opacity-70' : 'text-gray-400'}`}
+                    >
                       {count}
                     </span>
                   )}
@@ -182,7 +206,7 @@ export function DashboardPage() {
       {showForm && (
         <JobForm
           initial={editing ?? undefined}
-          onSubmit={editing ? data => updateJob(editing.id, data) : addJob}
+          onSubmit={editing ? (data) => updateJob(editing.id, data) : addJob}
           onClose={closeForm}
         />
       )}

@@ -3,7 +3,15 @@ import type { Job, JobStatus } from '@/types/database'
 import type { JobInput } from '@/hooks/useJobs'
 import { STATUS_TRANSITIONS, STATUS_LABELS, isTerminal } from '@/lib/jobStatus'
 
-const ALL_STATUSES: JobStatus[] = ['saved', 'applied', 'interview', 'offer', 'rejected', 'ghosted', 'withdrawn']
+const ALL_STATUSES: JobStatus[] = [
+  'saved',
+  'applied',
+  'interview',
+  'offer',
+  'rejected',
+  'ghosted',
+  'withdrawn',
+]
 
 interface Props {
   initial?: Job
@@ -52,9 +60,12 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-      onClick={e => e.target === e.currentTarget && onClose()}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full max-w-md overflow-y-auto rounded-2xl bg-white p-6 shadow-xl" style={{ maxHeight: '90dvh' }}>
+      <div
+        className="w-full max-w-md overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
+        style={{ maxHeight: '90dvh' }}
+      >
         <h2 className="mb-5 text-lg font-semibold text-gray-900">
           {initial ? 'Edit job' : 'Add job'}
         </h2>
@@ -62,7 +73,7 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
           <Field label="Company">
             <input
               value={company}
-              onChange={e => setCompany(e.target.value)}
+              onChange={(e) => setCompany(e.target.value)}
               placeholder="Acme Corp"
               required
               className={inputCls}
@@ -71,7 +82,7 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
           <Field label="Job title">
             <input
               value={title}
-              onChange={e => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
               placeholder="Software Engineer"
               required
               className={inputCls}
@@ -81,11 +92,11 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
             <Field label="Status">
               <select
                 value={status}
-                onChange={e => setStatus(e.target.value as JobStatus)}
+                onChange={(e) => setStatus(e.target.value as JobStatus)}
                 className={inputCls}
-              disabled={!!initial && isTerminal(initialStatus)}
+                disabled={!!initial && isTerminal(initialStatus)}
               >
-                {statusOptions.map(s => (
+                {statusOptions.map((s) => (
                   <option key={s} value={s}>
                     {STATUS_LABELS[s]}
                   </option>
@@ -95,7 +106,7 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
             <Field label="Location">
               <input
                 value={location}
-                onChange={e => setLocation(e.target.value)}
+                onChange={(e) => setLocation(e.target.value)}
                 placeholder="Remote"
                 className={inputCls}
               />
@@ -105,7 +116,7 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
             <Field label="Salary min">
               <input
                 value={salaryMin}
-                onChange={e => setSalaryMin(e.target.value.replace(/\D/g, ''))}
+                onChange={(e) => setSalaryMin(e.target.value.replace(/\D/g, ''))}
                 placeholder="50000"
                 className={inputCls}
               />
@@ -113,7 +124,7 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
             <Field label="Salary max">
               <input
                 value={salaryMax}
-                onChange={e => setSalaryMax(e.target.value.replace(/\D/g, ''))}
+                onChange={(e) => setSalaryMax(e.target.value.replace(/\D/g, ''))}
                 placeholder="80000"
                 className={inputCls}
               />
@@ -122,7 +133,7 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
           <Field label="Posting URL">
             <input
               value={url}
-              onChange={e => setUrl(e.target.value)}
+              onChange={(e) => setUrl(e.target.value)}
               placeholder="https://..."
               type="url"
               className={inputCls}
@@ -131,7 +142,7 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
           <Field label="Notes">
             <textarea
               value={notes}
-              onChange={e => setNotes(e.target.value)}
+              onChange={(e) => setNotes(e.target.value)}
               placeholder="Anything worth remembering about this role..."
               rows={3}
               className={`${inputCls} resize-none`}

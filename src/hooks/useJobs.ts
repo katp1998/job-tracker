@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Job, JobStatus } from '@/types/database'
 
@@ -19,20 +19,17 @@ export function useJobs() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchJobs = useCallback(async () => {
-    setLoading(true)
-    const { data, error: err } = await supabase
+  useEffect(() => {
+    supabase
       .from('jobs')
       .select('*')
       .order('created_at', { ascending: false })
-    if (err) setError(err.message)
-    else setJobs(data ?? [])
-    setLoading(false)
+      .then(({ data, error: err }) => {
+        if (err) setError(err.message)
+        else setJobs(data ?? [])
+        setLoading(false)
+      })
   }, [])
-
-  useEffect(() => {
-    fetchJobs()
-  }, [fetchJobs])
 
   async function addJob(input: JobInput) {
     const {
@@ -60,12 +57,13 @@ export function useJobs() {
       .select()
       .single()
     if (err) throw new Error(err.message)
-    setJobs(prev => [data, ...prev])
+    setJobs((prev) => [data, ...prev])
   }
 
   async function updateJob(id: string, input: JobInput) {
-    const existing = jobs.find(j => j.id === id)
-    const appliedAt = existing?.applied_at ?? (input.status === 'applied' ? new Date().toISOString() : null)
+    const existing = jobs.find((j) => j.id === id)
+    const appliedAt =
+      existing?.applied_at ?? (input.status === 'applied' ? new Date().toISOString() : null)
     const { data, error: err } = await supabase
       .from('jobs')
       .update({
@@ -84,13 +82,13 @@ export function useJobs() {
       .select()
       .single()
     if (err) throw new Error(err.message)
-    setJobs(prev => prev.map(j => (j.id === id ? data : j)))
+    setJobs((prev) => prev.map((j) => (j.id === id ? data : j)))
   }
 
   async function deleteJob(id: string) {
     const { error: err } = await supabase.from('jobs').delete().eq('id', id)
     if (err) throw new Error(err.message)
-    setJobs(prev => prev.filter(j => j.id !== id))
+    setJobs((prev) => prev.filter((j) => j.id !== id))
   }
 
   return { jobs, loading, error, addJob, updateJob, deleteJob }
