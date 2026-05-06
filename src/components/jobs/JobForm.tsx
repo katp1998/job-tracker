@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import type { Job, JobStatus } from '@/types/database'
 import type { JobInput } from '@/hooks/useJobs'
+import { STATUS_TRANSITIONS, STATUS_LABELS, isTerminal } from '@/lib/jobStatus'
 
-const STATUSES: JobStatus[] = ['saved', 'applied', 'interview', 'offer', 'rejected', 'ghosted', 'withdrawn']
+const ALL_STATUSES: JobStatus[] = ['saved', 'applied', 'interview', 'offer', 'rejected', 'ghosted', 'withdrawn']
 
 interface Props {
   initial?: Job
@@ -15,7 +16,11 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
   const [title, setTitle] = useState(initial?.title ?? '')
   const [url, setUrl] = useState(initial?.url ?? '')
   const [location, setLocation] = useState(initial?.location ?? '')
-  const [status, setStatus] = useState<JobStatus>(initial?.status ?? 'saved')
+  const initialStatus = initial?.status ?? 'saved'
+  const [status, setStatus] = useState<JobStatus>(initialStatus)
+  const statusOptions: JobStatus[] = initial
+    ? [initialStatus, ...STATUS_TRANSITIONS[initialStatus]]
+    : ALL_STATUSES
   const [notes, setNotes] = useState(initial?.notes ?? '')
   const [salaryMin, setSalaryMin] = useState(initial?.salary_min?.toString() ?? '')
   const [salaryMax, setSalaryMax] = useState(initial?.salary_max?.toString() ?? '')
@@ -78,10 +83,11 @@ export function JobForm({ initial, onSubmit, onClose }: Props) {
                 value={status}
                 onChange={e => setStatus(e.target.value as JobStatus)}
                 className={inputCls}
+              disabled={!!initial && isTerminal(initialStatus)}
               >
-                {STATUSES.map(s => (
+                {statusOptions.map(s => (
                   <option key={s} value={s}>
-                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                    {STATUS_LABELS[s]}
                   </option>
                 ))}
               </select>

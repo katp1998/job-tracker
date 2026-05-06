@@ -36,7 +36,7 @@ export function JobCard({ job, onEdit, onDelete }: Props) {
             rel="noopener noreferrer"
             className="hover:text-gray-700"
           >
-            View posting ↗
+            View posting
           </a>
         )}
         <span className="ml-auto">{timeAgo(job.created_at)}</span>

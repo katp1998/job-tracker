@@ -52,8 +52,8 @@ export function useJobs() {
         description: null,
         salary_min: input.salary_min ?? null,
         salary_max: input.salary_max ?? null,
-        salary_currency: input.salary_currency ?? 'USD',
-        applied_at: null,
+        salary_currency: input.salary_currency ?? 'GBP',
+        applied_at: input.status === 'applied' ? new Date().toISOString() : null,
         last_contact_at: null,
         follow_up_sent_at: null,
       })
@@ -64,6 +64,8 @@ export function useJobs() {
   }
 
   async function updateJob(id: string, input: JobInput) {
+    const existing = jobs.find(j => j.id === id)
+    const appliedAt = existing?.applied_at ?? (input.status === 'applied' ? new Date().toISOString() : null)
     const { data, error: err } = await supabase
       .from('jobs')
       .update({
@@ -75,7 +77,8 @@ export function useJobs() {
         notes: input.notes ?? null,
         salary_min: input.salary_min ?? null,
         salary_max: input.salary_max ?? null,
-        salary_currency: input.salary_currency ?? 'USD',
+        salary_currency: input.salary_currency ?? 'GBP',
+        applied_at: appliedAt,
       })
       .eq('id', id)
       .select()

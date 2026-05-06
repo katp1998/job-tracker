@@ -3,8 +3,7 @@ import { createPortal } from 'react-dom'
 import { FiArrowUp, FiArrowDown, FiArrowUpRight, FiChevronDown, FiEdit2, FiTrash2 } from 'react-icons/fi'
 import { TbArrowsUpDown } from 'react-icons/tb'
 import type { Job, JobStatus } from '@/types/database'
-
-const STATUSES: JobStatus[] = ['saved', 'applied', 'interview', 'offer', 'rejected', 'ghosted', 'withdrawn']
+import { STATUS_TRANSITIONS, STATUS_LABELS, isTerminal } from '@/lib/jobStatus'
 
 const STATUS_CLASSES: Record<JobStatus, string> = {
   saved:     'bg-gray-100 text-gray-600',
@@ -26,17 +25,7 @@ const STATUS_DOT: Record<JobStatus, string> = {
   withdrawn: 'bg-orange-500',
 }
 
-const STATUS_LABELS: Record<JobStatus, string> = {
-  saved:     'Saved',
-  applied:   'Applied',
-  interview: 'Interview',
-  offer:     'Offer',
-  rejected:  'Rejected',
-  ghosted:   'Ghosted',
-  withdrawn: 'Withdrawn',
-}
-
-export type SortKey = 'title' | 'applied_at' | 'updated_at'
+export type SortKey = 'title' | 'location' | 'applied_at' | 'updated_at'
 export type SortDir = 'asc' | 'desc'
 
 interface Props {
@@ -86,12 +75,23 @@ function StatusDropdown({ jobId, status, onChange }: {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [open])
 
+  const terminal = isTerminal(status)
+  const options = STATUS_TRANSITIONS[status]
+
   function handleOpen() {
     if (triggerRef.current) {
       const r = triggerRef.current.getBoundingClientRect()
       setPos({ top: r.bottom + 4, left: r.left })
     }
     setOpen(o => !o)
+  }
+
+  if (terminal) {
+    return (
+      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_CLASSES[status]}`}>
+        {STATUS_LABELS[status]}
+      </span>
+    )
   }
 
   return (
@@ -110,11 +110,11 @@ function StatusDropdown({ jobId, status, onChange }: {
           style={{ position: 'fixed', top: pos.top, left: pos.left }}
           className="z-50 w-36 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
         >
-          {STATUSES.map(s => (
+          {options.map(s => (
             <button
               key={s}
               onClick={() => { onChange(jobId, s); setOpen(false) }}
-              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs hover:bg-gray-50 ${s === status ? 'font-semibold text-gray-900' : 'text-gray-600'}`}
+              className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs text-gray-600 hover:bg-gray-50"
             >
               <span className={`h-2 w-2 flex-shrink-0 rounded-full ${STATUS_DOT[s]}`} />
               {STATUS_LABELS[s]}
@@ -161,7 +161,7 @@ export function JobTable({ jobs, sortKey, sortDir, onSort, onStatusChange, onEdi
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Company</th>
             <SortHeader label="Position" col="title" />
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Status</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Location</th>
+            <SortHeader label="Location" col="location" />
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Salary</th>
             <SortHeader label="Applied" col="applied_at" />
             <SortHeader label="Updated" col="updated_at" />

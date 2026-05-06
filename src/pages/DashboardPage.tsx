@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FiSearch, FiX } from 'react-icons/fi'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { useJobs } from '@/hooks/useJobs'
@@ -19,11 +20,21 @@ const TABS: { label: string; value: Filter }[] = [
   { label: 'Ghosted', value: 'ghosted' },
 ]
 
+function motivationalMessage(applied: number, offers: number) {
+  if (offers > 0) return "You've got offers — great work!"
+  if (applied === 0) return 'Start applying, you\'ve got this!'
+  if (applied < 5) return 'Great start, keep the momentum going!'
+  if (applied < 15) return 'You\'re putting in the work — it\'ll pay off!'
+  if (applied < 30) return 'Impressive dedication, stay consistent!'
+  return 'Incredible hustle — your next role is out there!'
+}
+
 export function DashboardPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const { jobs, loading, addJob, updateJob, deleteJob } = useJobs()
 
+  const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
   const [sortKey, setSortKey] = useState<SortKey>('updated_at')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
@@ -56,7 +67,10 @@ export function DashboardPage() {
     setEditing(null)
   }
 
-  const filtered = filter === 'all' ? jobs : jobs.filter(j => j.status === filter)
+  const searched = search.trim()
+    ? jobs.filter(j => j.company.toLowerCase().includes(search.toLowerCase()))
+    : jobs
+  const filtered = filter === 'all' ? searched : searched.filter(j => j.status === filter)
 
   const sorted = [...filtered].sort((a, b) => {
     const av = (a[sortKey] ?? '').toLowerCase()
@@ -90,6 +104,29 @@ export function DashboardPage() {
           <Stat label="active" value={activeCount} />
           <Stat label="interviewing" value={jobs.filter(j => j.status === 'interview').length} />
           <Stat label="offers" value={jobs.filter(j => j.status === 'offer').length} />
+        </div>
+
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div className="relative w-64">
+            <FiSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search by company..."
+              className="w-full rounded-lg border border-gray-300 py-2 pl-8 pr-8 text-sm outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
+            />
+            {search && (
+              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
+                <FiX size={14} />
+              </button>
+            )}
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-medium text-gray-900">
+              {jobs.filter(j => j.status !== 'saved').length} applications sent
+            </p>
+            <p className="text-xs text-gray-400">{motivationalMessage(jobs.filter(j => j.status !== 'saved').length, jobs.filter(j => j.status === 'offer').length)}</p>
+          </div>
         </div>
 
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
