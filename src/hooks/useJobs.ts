@@ -26,7 +26,7 @@ export function useJobs() {
       .order('created_at', { ascending: false })
       .then(({ data, error: err }) => {
         if (err) setError(err.message)
-        else setJobs(data ?? [])
+        else setJobs((data ?? []) as Job[])
         setLoading(false)
       })
   }, [])
@@ -57,7 +57,7 @@ export function useJobs() {
       .select()
       .single()
     if (err) throw new Error(err.message)
-    setJobs((prev) => [data, ...prev])
+    setJobs((prev) => [data as Job, ...prev])
   }
 
   async function updateJob(id: string, input: JobInput) {
@@ -82,7 +82,7 @@ export function useJobs() {
       .select()
       .single()
     if (err) throw new Error(err.message)
-    setJobs((prev) => prev.map((j) => (j.id === id ? data : j)))
+    setJobs((prev) => prev.map((j) => (j.id === id ? (data as Job) : j)))
   }
 
   async function deleteJob(id: string) {
