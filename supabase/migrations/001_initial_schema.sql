@@ -65,6 +65,11 @@ create policy "users manage own events"
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+-- Grant access to authenticated users
+grant usage on schema public to authenticated;
+grant all on public.jobs to authenticated;
+grant all on public.job_events to authenticated;
+
 -- Indexes for common queries
 create index jobs_user_status on public.jobs(user_id, status);
 create index jobs_last_contact on public.jobs(user_id, last_contact_at);
