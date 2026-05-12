@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "Job Tracker – Capture",
+  "version": "1.0.0",
+  "description": "One-click capture of job postings directly into your Job Tracker",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://*.linkedin.com/*",
+    "https://*.indeed.com/*",
+    "https://*.glassdoor.com/*",
+    "https://*.glassdoor.co.uk/*",
+    "https://jobs.lever.co/*",
+    "https://boards.greenhouse.io/*",
+    "https://*.myworkdayjobs.com/*",
+    "https://*.reed.co.uk/*",
+    "https://*.totaljobs.com/*",
+    "https://*.cwjobs.co.uk/*",
+    "https://fruyhrczryssqtynszon.supabase.co/*",
+    "https://katp1998.github.io/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Job Tracker – Capture",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/jobs/view/*",
+        "https://*.indeed.com/viewjob*",
+        "https://www.glassdoor.com/job-listing/*",
+        "https://www.glassdoor.co.uk/job-listing/*",
+        "https://jobs.lever.co/*/*",
+        "https://boards.greenhouse.io/*/jobs/*",
+        "https://*.myworkdayjobs.com/*",
+        "https://www.reed.co.uk/jobs/*",
+        "https://www.totaljobs.com/job/*",
+        "https://www.cwjobs.co.uk/job/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
