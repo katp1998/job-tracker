@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Loading -->
+<div id="view-loading" class="view active">
+  <div class="loading-view">
+    <div class="spinner"></div>
+    Loading…
+  </div>
+</div>
+
+<!-- Login -->
+<div id="view-login" class="view">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-mark">JT</div>
+      Job Tracker
+    </div>
+  </div>
+  <div class="login-body">
+    <p class="login-sub">Sign in to your Job Tracker account to start capturing jobs.</p>
+    <button id="google-login-btn" class="btn-google">
+      <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Sign in with Google
+    </button>
+    <p class="login-hint">
+      You'll be taken to Job Tracker to sign in.<br>
+      Come back and click the extension icon again when done.
+    </p>
+  </div>
+</div>
+
+<!-- Job form -->
+<div id="view-form" class="view">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-mark">JT</div>
+      Job Tracker
+    </div>
+    <div class="header-account">
+      <span id="user-email" class="user-email"></span>
+      <button id="logout-btn" class="btn-ghost">Sign out</button>
+    </div>
+  </div>
+  <div id="source-badge" class="source-badge" style="display:none">
+    <span class="source-dot"></span>
+    <span id="source-name"></span>
+  </div>
+  <div id="scrape-warn" class="scrape-warn" style="display:none">
+    Could not auto-detect from this page — fill in manually.
+  </div>
+  <div class="form-body">
+    <div class="field">
+      <label for="company">Company *</label>
+      <input type="text" id="company" placeholder="Acme Corp">
+    </div>
+    <div class="field">
+      <label for="job-title">Job title *</label>
+      <input type="text" id="job-title" placeholder="Software Engineer">
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status">
+          <option value="saved">Saved</option>
+          <option value="applied">Applied</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="location">Location</label>
+        <input type="text" id="location" placeholder="London / Remote">
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="field">
+        <label for="salary-min">Sal. min</label>
+        <input type="number" id="salary-min" placeholder="50000" min="0">
+      </div>
+      <div class="field">
+        <label for="salary-max">Sal. max</label>
+        <input type="number" id="salary-max" placeholder="80000" min="0">
+      </div>
+      <div class="field">
+        <label for="currency">CCY</label>
+        <select id="currency">
+          <option value="GBP">GBP</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="job-url">Posting URL</label>
+      <input type="url" id="job-url" placeholder="https://…">
+    </div>
+    <div class="field">
+      <label for="notes">Notes</label>
+      <textarea id="notes" rows="2" placeholder="Anything worth remembering…"></textarea>
+    </div>
+  </div>
+  <div class="form-footer">
+    <div id="form-error" class="error-msg" style="display:none"></div>
+    <button id="submit-btn" class="btn-primary">Add to Job Tracker</button>
+  </div>
+</div>
+
+<!-- Success -->
+<div id="view-success" class="view">
+  <div class="success-body">
+    <div class="success-icon">✓</div>
+    <p class="success-title">Job saved!</p>
+    <p class="success-sub" id="success-info"></p>
+    <a id="dashboard-link" href="#" target="_blank" class="btn-link">Open Job Tracker ↗</a>
+    <button id="add-another-btn" class="btn-ghost-sm">Add another job</button>
+  </div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
