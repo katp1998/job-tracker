@@ -29,6 +29,21 @@ export function useJobs() {
         else setJobs((data ?? []) as Job[])
         setLoading(false)
       })
+
+    const channel = supabase
+      .channel('jobs-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'jobs' }, (payload) => {
+        setJobs((prev) => [payload.new as Job, ...prev])
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'jobs' }, (payload) => {
+        setJobs((prev) => prev.map((j) => (j.id === payload.new.id ? (payload.new as Job) : j)))
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'jobs' }, (payload) => {
+        setJobs((prev) => prev.filter((j) => j.id !== payload.old.id))
+      })
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
   async function addJob(input: JobInput) {
