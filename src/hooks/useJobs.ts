@@ -43,7 +43,9 @@ export function useJobs() {
       })
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   async function addJob(input: JobInput) {
